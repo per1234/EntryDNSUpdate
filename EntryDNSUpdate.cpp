@@ -9,9 +9,15 @@
 #include <WiFiClientSecure.h>
 #include "EntryDNSUpdate.h"
 
+EntryDNSUpdate::EntryDNSUpdate(String _token, unsigned long _updateFrequencySeconds): token(_token), updateFrequencySeconds(_updateFrequencySeconds) {
+}
 
-EntryDNSUpdate::EntryDNSUpdate(String token) {
-  this->token=token;
+void EntryDNSUpdate::update() {
+  unsigned long now = millis();
+  if(lastUpdated == 0 || (lastUpdated + updateFrequencySeconds * 1000) < now){
+    doUpdate();
+    lastUpdated = now;
+  }
 }
 
 void EntryDNSUpdate::doUpdate() {
